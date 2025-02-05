@@ -1,12 +1,15 @@
 import { Text, View, StyleSheet, Animated } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6 as Icon } from "@expo/vector-icons"
 import { useEffect, useRef } from "react";
 import { COLORS } from "@/constants/Colors";
+import { useRouter } from "expo-router";
 
 export default function SplashScreen() {
   // Creates a new Animated.Value and assigns it to fadeAnimation
   const fadeAnimation = useRef(new Animated.Value(0)).current;
   const scaleAnimation = useRef(new Animated.Value(0.5)).current;
+
+  const router = useRouter();
 
   useEffect(() => {
     // Starts the animation when the component mounts
@@ -23,6 +26,14 @@ export default function SplashScreen() {
         useNativeDriver: true
       })
     ]).start()
+
+    // Sets a timeout to navigate to the auth screen after 2 seconds
+    const timer = setTimeout(() => {
+      router.replace("/auth");
+    }, 2000)
+
+    // Clears the timeout when the component unmounts
+    return () => clearTimeout(timer);
   }, [])
 
   return (
@@ -33,8 +44,8 @@ export default function SplashScreen() {
           { opacity: fadeAnimation, transform: [{ scale: scaleAnimation }] },
         ]}
       >
-        <Ionicons name="medical" size={100} color="white" />
-        <Text style={styles.appName}>Re<Text style={styles.highlight}>med</Text></Text>
+        <Icon name="prescription-bottle-medical" size={80} color="white" />
+        <Text style={styles.appName}>Re<Text style={styles.highlight}>Med</Text></Text>
       </Animated.View>
     </View>
   );
@@ -43,7 +54,7 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.main,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -53,11 +64,13 @@ const styles = StyleSheet.create({
   appName: {
     color: COLORS.white,
     fontSize: 32,
-    fontWeight: "bold",
+    fontWeight: "normal",
     marginTop: 10,
     letterSpacing: 1,
+    fontStyle: "italic",
   },
   highlight: {
     color: COLORS.danger,
+    fontWeight: "bold",
   }
 });
